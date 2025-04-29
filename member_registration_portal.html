@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pendaftaran Member</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --danger-color: #e63946;
+            --warning-color: #ffb703;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .error {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        input.error-input, textarea.error-input {
+            border-color: var(--danger-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #d90429;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #fb8500;
+        }
+
+        .gender-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-group input {
+            width: auto;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #noDataMessage {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .gender-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Portal Pendaftaran Member</h1>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Formulir Pendaftaran</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="fullName">Nama Lengkap</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Masukkan nama lengkap">
+                    <div class="error" id="fullNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Masukkan email">
+                    <div class="error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Nomor HP</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Masukkan nomor HP">
+                    <div class="error" id="phoneError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <div class="gender-group">
+                        <div class="radio-group">
+                            <input type="radio" id="male" name="gender" value="Laki-laki">
+                            <label for="male">Laki-laki</label>
+                        </div>
+                        <div class="radio-group">
+                            <input type="radio" id="female" name="gender" value="Perempuan">
+                            <label for="female">Perempuan</label>
+                        </div>
+                    </div>
+                    <div class="error" id="genderError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">Tanggal Lahir</label>
+                    <input type="date" id="birthDate" name="birthDate">
+                    <div class="error" id="birthDateError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Alamat</label>
+                    <textarea id="address" name="address" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                    <div class="error" id="addressError"></div>
+                </div>
+
+                <button type="submit" class="btn">Daftar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Daftar Member</h2>
+            <div id="memberTable" class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Nomor HP</th>
+                            <th>Gender</th>
+                            <th>Tanggal Lahir</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberList">
+                        <!-- Data akan ditampilkan di sini -->
+                    </tbody>
+                </table>
+                <div id="noDataMessage" class="hidden">Belum ada data member yang terdaftar</div>
+            </div>
+            <div class="action-buttons">
+                <button id="deleteAllBtn" class="btn btn-danger">Hapus Semua Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Pendaftaran Berhasil</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Selamat! Anda telah berhasil mendaftar sebagai member.</p>
+                <div id="memberDetails">
+                    <!-- Detail member akan ditampilkan di sini -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmBtn" class="btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hapus Semua -->
+    <div id="deleteAllModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Konfirmasi Hapus</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus semua data member?</p>
+                <p>Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelDeleteBtn" class="btn btn-warning">Batal</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const registrationForm = document.getElementById('registrationForm');
+        const memberList = document.getElementById('memberList');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const deleteAllModal = document.getElementById('deleteAllModal');
+        const memberDetails = document.getElementById('memberDetails');
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        
+        // Close buttons
+        const closeButtons = document.querySelectorAll('.close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                confirmationModal.style.display = 'none';
+                deleteAllModal.style.display = 'none';
+            });
+        });
+        
+        // Confirmation modal OK button
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            confirmationModal.style.display = 'none';
+        });
+        
+        // Delete All Data button
+        deleteAllBtn.addEventListener('click', () => {
+            deleteAllModal.style.display = 'flex';
+        });
+        
+        // Cancel Delete button
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            deleteAllModal.style.display = 'none';
+        });
+        
+        // Confirm Delete button
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            localStorage.removeItem('members');
+            updateMemberTable();
+            deleteAllModal.style.display = 'none';
+        });
+        
+        // Load existing members from localStorage
+        function loadMembers() {
+            const members = JSON.parse(localStorage.getItem('members')) || [];
+            return members;
+        }
+        
+        // Save members to localStorage
+        function saveMembers(members) {
+            localStorage.setItem('members', JSON.stringify(members));
+        }
+        
+        // Validate form fields
+        function validateForm() {
+            let isValid = true;
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const gender = document.querySelector('input[name="gender"]:checked');
+            const birthDate = document.getElementById('birthDate').value;
+            const address = document.getElementById('address').value.trim();
+            
+            // Reset error messages
+            document.querySelectorAll('.error').forEach(element => {
+                element.textContent = '';
+            });
+            
+            document.querySelectorAll('input, textarea').forEach(element => {
+                element.classList.remove('error-input');
+            });
+            
+            // Validate Full Name
+            if (!fullName) {
+                document.getElementById('fullNameError').textContent = 'Nama lengkap wajib diisi';
+                document.getElementById('fullName').classList.add('error-input');
+                isValid = false;
+            }
+            
+            // Validate Email
+            if (!email) {
+                document.getElementById('emailError').textContent = 'Email wajib diisi';
+                document.getElementById('email').classList.add('error-input');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                document.getElementById('emailError').textContent = 'Format email tidak valid';
+                document.getElementById('email').classList.add('error-input');
+                isValid = false;
+            }
+            
+            // Validate Phone
+            if (!phone) {
+                document.getElementById('phoneError').textContent = 'Nomor HP wajib diisi';
+                document.getElementById('phone').classList.add('error-input');
+                isValid = false;
+            } else if (!validatePhone(phone)) {
+                document.getElementById('phoneError').textContent = 'Format nomor HP tidak valid';
+                document.getElementById('phone').classList.add('error-input');
+                isValid = false;
+            }
+            
+            // Validate Gender
+            if (!gender) {
+                document.getElementById('genderError').textContent = 'Jenis kelamin wajib dipilih';
+                isValid = false;
+            }
+            
+            // Validate Birth Date
+            if (!birthDate) {
+                document.getElementById('birthDateError').textContent = 'Tanggal lahir wajib diisi';
+                document.getElementById('birthDate').classList.add('error-input');
+                isValid = false;
+            }
+            
+            // Validate Address
+            if (!address) {
+                document.getElementById('addressError').textContent = 'Alamat wajib diisi';
+                document.getElementById('address').classList.add('error-input');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Validate Email format
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Validate Phone format
+        function validatePhone(phone) {
+            // Menerima format: awalan 08 atau +62, diikuti 8-13 angka
+            const re = /^(\+62|08)[0-9]{8,13}$/;
+            return re.test(phone);
+        }
+        
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+        
+        // Update member table
+        function updateMemberTable() {
+            const members = loadMembers();
+            memberList.innerHTML = '';
+            
+            if (members.length === 0) {
+                noDataMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noDataMessage.classList.add('hidden');
+            
+            members.forEach((member, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${member.fullName}</td>
+                    <td>${member.email}</td>
+                    <td>${member.phone}</td>
+                    <td>${member.gender}</td>
+                    <td>${formatDate(member.birthDate)}</td>
+                    <td>${member.address}</td>
+                    <td><button class="btn btn-danger delete-btn" data-index="${index}">Hapus</button></td>
+                `;
+                memberList.appendChild(row);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteMember(index);
+                });
+            });
+        }
+        
+        // Delete a member
+        function deleteMember(index) {
+            const members = loadMembers();
+            members.splice(index, 1);
+            saveMembers(members);
+            updateMemberTable();
+        }
+        
+        // Show member details in confirmation modal
+        function showMemberDetails(member) {
+            memberDetails.innerHTML = `
+                <div style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                    <p><strong>Nama:</strong> ${member.fullName}</p>
+                    <p><strong>Email:</strong> ${member.email}</p>
+                    <p><strong>Nomor HP:</strong> ${member.phone}</p>
+                    <p><strong>Jenis Kelamin:</strong> ${member.gender}</p>
+                    <p><strong>Tanggal Lahir:</strong> ${formatDate(member.birthDate)}</p>
+                    <p><strong>Alamat:</strong> ${member.address}</p>
+                </div>
+            `;
+        }
+        
+        // Submit form handler
+        registrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+            
+            const newMember = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                birthDate: document.getElementById('birthDate').value,
+                address: document.getElementById('address').value.trim()
+            };
+            
+            // Add new member to localStorage
+            const members = loadMembers();
+            members.push(newMember);
+            saveMembers(members);
+            
+            // Show confirmation modal
+            showMemberDetails(newMember);
+            confirmationModal.style.display = 'flex';
+            
+            // Reset form
+            registrationForm.reset();
+            
+            // Update member table
+            updateMemberTable();
+        });
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            updateMemberTable();
+        });
+        
+        // Close modals when clicking outside of them
+        window.addEventListener('click', function(event) {
+            if (event.target === confirmationModal) {
+                confirmationModal.style.display = 'none';
+            }
+            if (event.target === deleteAllModal) {
+                deleteAllModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
